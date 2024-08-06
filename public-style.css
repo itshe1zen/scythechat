@@ -1,0 +1,49 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: black;
+    color: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.terminal-container {
+    width: 80%;
+    max-width: 800px;
+    background: black;
+    border: 2px solid green;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+}
+
+.terminal-output {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.terminal-input {
+    display: flex;
+    align-items: center;
+}
+
+.prompt {
+    margin-right: 10px;
+}
+
+#chatInput {
+    flex: 1;
+    background: black;
+    border: none;
+    color: green;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+}
+
+#chatInput:focus {
+    outline: none;
+}
