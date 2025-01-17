@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peertalk - P2P Chat</title>
-    <script src="https://cdn.jsdelivr.net/npm/brython@3.11.1/brython.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/brython@3.11.1/brython_stdlib.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-peer@9.11.0/simplepeer.min.js"></script>
     <style>
         body {
@@ -40,7 +38,7 @@
         }
     </style>
 </head>
-<body onload="brython()">
+<body>
     <h1>Peertalk - P2P Chat</h1>
     <div id="chat">
         <div id="messages"></div>
@@ -51,21 +49,28 @@
         const messagesDiv = document.getElementById('messages');
         const messageInput = document.getElementById('message-input');
 
-        let peer = new SimplePeer({ initiator: location.hash === '#host', trickle: false });
-
-        peer.on('signal', data => {
-            prompt("Copy this signal data to share with your peer:", JSON.stringify(data));
+        // Create a new SimplePeer instance
+        const peer = new SimplePeer({
+            initiator: location.hash === '#host', // Host if hash is #host
+            trickle: false // Disable trickling of ICE candidates
         });
 
+        // Display signaling data for connection sharing
+        peer.on('signal', data => {
+            prompt('Copy and share this signal data with your peer:', JSON.stringify(data));
+        });
+
+        // Connect peers
         peer.on('connect', () => {
-            console.log('Peer connected!');
             appendMessage('System: Peer connected!');
         });
 
+        // Receive data from peers
         peer.on('data', data => {
             appendMessage(`Peer: ${data}`);
         });
 
+        // Append messages to the chat box
         function appendMessage(message) {
             const messageElement = document.createElement('div');
             messageElement.textContent = message;
@@ -73,14 +78,21 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
+        // Send messages to the peer
         messageInput.addEventListener('keypress', e => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && messageInput.value.trim() !== '') {
                 const message = messageInput.value;
                 appendMessage(`You: ${message}`);
-                peer.send(message);
+                peer.send(message); // Send the message to the peer
                 messageInput.value = '';
             }
         });
+
+        // Allow pasting signaling data to connect
+        const signalData = prompt('Paste your peer\'s signaling data to connect:');
+        if (signalData) {
+            peer.signal(JSON.parse(signalData));
+        }
     </script>
 </body>
 </html>
